@@ -2,17 +2,18 @@
 
 import { useState, useRef, FormEvent } from "react";
 import { useSearchParams } from "next/navigation";
-import axios from "axios";
+import { useAuthStore } from "@/stores/auth/auth";
+
 
 export default function VerifyOtp() {
+  const {loading,message,handleUserVarify} = useAuthStore();
+
+
+
   const params = useSearchParams();
   const email = params.get("email") || "";
-
   const [otp, setOtp] = useState<string[]>(["", "", "", "", "", ""]);
-  const [message, setMessage] = useState("");
-
   const inputRefs = useRef<HTMLInputElement[]>([]);
-
   const handleChange = (value: string, index: number) => {
     if (/^\d?$/.test(value)) {
       const newOtp = [...otp];
@@ -24,38 +25,17 @@ export default function VerifyOtp() {
       }
     }
   };
-
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>, index: number) => {
     if (e.key === "Backspace" && !otp[index] && index > 0) {
       inputRefs.current[index - 1]?.focus();
     }
   };
 
+
   const handleVerify = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-
-    const finalOtp = otp.join(""); // combine into "123456"
-
-    if (finalOtp.length !== 6) {
-      setMessage("Please enter all 6 digits.");
-      return;
-    }
-
-    try {
-      const res = await axios.post(
-        "https://backend.occubitsolution.com/api/auth/verify-user",
-        {
-          email,
-          otp: finalOtp,
-        }
-      );
-
-      console.log("OTP verified:", res.data);
-      setMessage("Email verified successfully!");
-    } catch (error: any) {
-      console.log(error);
-      setMessage(error.response?.data?.message || "Invalid OTP");
-    }
+      await handleUserVarify(email,otp);    
+      setOtp(["","","","","",""]);
   };
 
   return (
@@ -89,10 +69,11 @@ export default function VerifyOtp() {
         </div>
 
         <button
+          disabled={loading}
           type="submit"
           className="w-full bg-green-600 hover:bg-green-700 text-white py-2 rounded"
         >
-          Verify OTP
+          {loading ? 'Loading...' : ' Verify OTP'}
         </button>
 
         {message && (

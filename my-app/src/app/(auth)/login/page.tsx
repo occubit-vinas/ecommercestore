@@ -1,90 +1,76 @@
 "use client";
 
-import { useState, FormEvent } from "react";
-import axios, { AxiosError } from "axios";
-import { useRouter } from "next/navigation";
-import Cookies from "js-cookie";
-
+import { useState, useEffect } from "react";
+import { useAuthStore } from "@/stores/auth/auth";
 
 export default function Login() {
-  const router = useRouter();
+  const { handleuserLogin, loading, message} = useAuthStore();
 
-  const [email, setEmail] = useState<string>("");
-  const [password, setPassword] = useState<string>("");
-  const [message, setMessage] = useState<string>("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
 
-  const handleLogin = async (e: FormEvent<HTMLFormElement>) => {
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
-    try {
-      const res = await axios.post(
-        "https://backend.occubitsolution.com/api/auth/login",
-        {
-          email,
-          password,
-        }
-      );
-
-      console.log("Login Success:", res.data);
-
-      const userData = res.data.data;
-
-      // Store token
-      Cookies.set("token", userData.accessToken, { expires: 7 });
-
-      // Store full user object
-      Cookies.set("user", JSON.stringify(userData), { expires: 7 });
-
-      console.log("Saved token:", Cookies.get("token"));
-
-      router.push("/");
-    } catch (err) {
-      const error = err as AxiosError<any>;
-      console.log("Login Error:", error);
-
-      setMessage(error.response?.data?.message || "Invalid login");
-    }
+    await handleuserLogin(email, password);
+    console.log(message);
+    setEmail('');
+    setPassword('');
+    
   };
-
+  
   return (
     <div className="min-h-screen flex justify-center items-center bg-gray-900">
+      
       <form
-        onSubmit={handleLogin}
+        onSubmit={handleSubmit}
         className="bg-gray-800 p-8 rounded-lg shadow-lg w-full max-w-sm"
       >
-        <h2 className="text-3xl font-bold text-white mb-6 text-center">
-          Login
-        </h2>
+        <h2 className="text-3xl font-bold text-white mb-6 text-center">Login</h2>
 
+        {/* Email */}
         <input
           type="email"
           placeholder="Email"
           className="w-full p-2 mb-4 rounded bg-gray-700 text-white"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          required
         />
 
-        <input
-          type="password"
-          placeholder="Password"
-          className="w-full p-2 mb-6 rounded bg-gray-700 text-white"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          required
-        />
+        {/* Password + Toggle */}
+        <div className="relative mb-6">
+          <input
+            type={showPassword ? "text" : "password"}
+            placeholder="Password"
+            className="w-full p-2 rounded bg-gray-700 text-white"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+          />
 
+          <button
+            type="button"
+            className="absolute right-2 top-2 text-sm text-gray-300"
+            onClick={() => setShowPassword((prev) => !prev)}
+          >
+            {showPassword ? "Hide" : "Show"}
+          </button>
+        </div>
+
+        {/* Submit Button */}
         <button
           type="submit"
-          className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded"
+          disabled={loading}
+          className={`w-full text-white py-2 rounded ${
+            loading
+              ? "bg-blue-400 cursor-not-allowed"
+              : "bg-blue-600 hover:bg-blue-700"
+          }`}
         >
-          Login
+          {!loading ? "Login" : "Loading..."}
         </button>
-
-        {message && (
-          <p className="text-center text-red-400 mt-4">{message}</p>
-        )}
       </form>
+      <p>{message}</p>
     </div>
   );
 }
