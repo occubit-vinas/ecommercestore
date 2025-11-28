@@ -5,7 +5,7 @@ import { formatDate } from '@/utils/date';
 import Link from 'next/link';
 const page = () => {
 
-    const { categories, loading, error, responce, fetchcategories, fetchCategorieById, categorie } = useCategoryStore();
+    const { categories, loading, error, fetchcategories, fetchCategorieById, categorie , handleDelCategory} = useCategoryStore();
     useEffect(() => {
         const func = async () => {
             await fetchcategories();
@@ -53,7 +53,7 @@ const page = () => {
                                 >
                                     <td className="py-3 px-4 w-1/4">{item.name}</td>
 
-                                    <td className="py-3 px-4">{formatDate(item.creratedAt)}</td>
+                                     <td className="py-3 px-4">{item.createdAt && formatDate(item.createdAt)}</td>
                                     <td className="py-3 px-4">
                                         <div
                                             className={`flex items-center gap-2`}
@@ -71,7 +71,7 @@ const page = () => {
                                                     alt="View"
                                                     className="cursor-pointer"
                                                 /> */}
-                                            <button onClick={() => fetchCategorieById(item.id)} className='hover:text-red-800 cursor-pointer' disabled={loading}>View</button>
+                                            <button onClick={() => item.id &&  fetchCategorieById(item.id)} className='hover:text-red-800 cursor-pointer' disabled={loading}>View</button>
                                             {/* <Image
                                                     src="/dashboard/edit.png"
                                                     height={20}
@@ -87,7 +87,7 @@ const page = () => {
                                                     alt="Delete"
                                                     className="cursor-pointer"
                                                 /> */}
-                                            <p>Trash</p>
+                                            <button onClick={()=> item.id && handleDelCategory(item.id)} className='hover:text-red-900 '>Trash</button>
                                         </div>
                                     </td>
                                 </tr>
@@ -99,12 +99,12 @@ const page = () => {
                 </table>
 
             </div>
-            {
+            {/* {
                 fetchCategorieById && (
                     // console.log('cat data is',fetchCategorieById)
                     <h1>new data</h1>
                 )
-            }
+            } */}
         </div>
     )
 }

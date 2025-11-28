@@ -2,16 +2,18 @@
 import React, { useState, ChangeEvent, FormEvent } from "react";
 import { signupForm } from "@/types/auth.types";
 import { useAuthStore } from "@/stores/auth/auth";
+import { useRouter } from "next/navigation";
+
 export default function Signup() {
 
-  const {loading,message,handleUserSignup} = useAuthStore();
+  const {loading,message,handleUserSignup,isSignUp} = useAuthStore();
   const [formData, setFormData] = useState<signupForm>({
     name: "",
     email: "",
     password: "",
   });
 
-
+  const router = useRouter();
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
@@ -19,6 +21,10 @@ export default function Signup() {
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     await handleUserSignup(formData.name,formData.email,formData.password);
+    if(isSignUp){
+      
+      router.push(`/varify-otp?=${formData.email}`);
+    }
     setFormData({name:"",email:"",password:""});
   };
 

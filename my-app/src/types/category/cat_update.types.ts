@@ -14,6 +14,7 @@ export interface Attribute {
 }
 
 export interface Category_ {
+  id?:string,
   name: string;
   slug: string;
   image_url: string;

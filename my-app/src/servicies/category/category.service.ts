@@ -1,6 +1,8 @@
+// 'use server'
 import axios from 'axios';
-import { BASE_URL ,STORE_ID,TOKEN} from '@/config/api';
-
+import { BASE_URL, STORE_ID, TOKEN } from '@/config/api';
+// import { cookies } from "next/headers";
+import { getToken } from '@/utils/cookie';
 // export function getGlobalCategory(node, list) {
 //   if (!node) return;                    
 //   if (typeof node.name === 'string') {  
@@ -23,55 +25,57 @@ import { BASE_URL ,STORE_ID,TOKEN} from '@/config/api';
 // console.log(myarr1);
 
 
- // const myarr = [[], []];
-  // for (let i = 0; i < responce.data.length; i++) {
-    // console.log(i);
-    // let parent = responce.data[i] as any;
-    // let hasChild = true;
-    // let child = parent.children;
-    // while(hasChild) {
-    //   // console.log("while child",child,parent);
-    //   if(child[0].children.length > 0) {
-    //     console.log("Found the child",child[0].name);
-    //     child = child[0].children;
-    //   } else {
-    //     console.log(`${child[0].name} has no child`);
-    //     hasChild = false;
-    //     exit;
-    //   }
-    // }
+// const myarr = [[], []];
+// for (let i = 0; i < responce.data.length; i++) {
+// console.log(i);
+// let parent = responce.data[i] as any;
+// let hasChild = true;
+// let child = parent.children;
+// while(hasChild) {
+//   // console.log("while child",child,parent);
+//   if(child[0].children.length > 0) {
+//     console.log("Found the child",child[0].name);
+//     child = child[0].children;
+//   } else {
+//     console.log(`${child[0].name} has no child`);
+//     hasChild = false;
+//     exit;
+//   }
+// }
 
 
-    // let str = `responce.data[${i}].children`;
-    // let obj = responce.data[i].children;
+// let str = `responce.data[${i}].children`;
+// let obj = responce.data[i].children;
 
-    // console.log(str);
-    // // myarr[i].push(obj[i].name);
-    // while (obj && obj.length > 0) {
-    //   // console.log('my sol is',str.name);
+// console.log(str);
+// // myarr[i].push(obj[i].name);
+// while (obj && obj.length > 0) {
+//   // console.log('my sol is',str.name);
 
-    //   // console.log("Child",str.children[0].name);
-    //   console.log("Child", obj[0].name);
-    //   myarr[i].push(obj[0].name);
-    //   str += '.children';
-    //   obj = obj[0].children;
-    //   console.log(str);
-    //   console.log(obj);
-    // }
-    // str = '';
+//   // console.log("Child",str.children[0].name);
+//   console.log("Child", obj[0].name);
+//   myarr[i].push(obj[0].name);
+//   str += '.children';
+//   obj = obj[0].children;
+//   console.log(str);
+//   console.log(obj);
+// }
+// str = '';
 
-    //   // str = str + `.children[0]`;
-    // }
-  // }
+//   // str = str + `.children[0]`;
+// }
+// }
 
-  
+
 // const axios = require('axios');
 // services/category/globalcategory.service.ts
 
-import {allCategoryType} from '@/types/category/allcategory.types';
-import { Category } from '@/types/category/allcategory.types'; 
+import { allCategoryType, delCatResTypes } from '@/types/category/allcategory.types';
+import { Category } from '@/types/category/allcategory.types';
+import { Category_ } from '@/types/category/cat_update.types';
 import { CategoryPayload } from '@/types/category/allcategory.types';
-
+import { getCatByIdTypes } from '@/types/category/allcategory.types';
+import { addCatResTypes } from '@/types/category/allcategory.types';
 
 export const getAllCategory = async (): Promise<Category[]> => {
   try {
@@ -84,37 +88,41 @@ export const getAllCategory = async (): Promise<Category[]> => {
         },
       }
     );
-
     // Return only the data part (array of root categories)
-    return response.data || [];
+    return response.data.data || [];
 
   } catch (error: any) {
     const message = error.response?.data?.message || error.message || 'Failed to fetch categories';
     console.error('getAllCategory error:', message);
-    throw new Error(message); // This will be caught in your store/component
+    throw new Error(message);
   }
 };
 
-const addcategorie = async (data:CategoryPayload) => {
+const addcategorie = async (data: CategoryPayload): Promise<addCatResTypes | undefined> => {
   try {
-    const res = await axios.post(
+    // const userCookies = await cookies();
+    // const token = userCookies.get('token');
+    const token = getToken();
+    const res = await axios.post<addCatResTypes>(
       `${BASE_URL}/seller/cmicq2mup0005q6lfjz98h2yd/create-category`,
       data,
       {
         headers: {
-          Authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImNtaWN6dDZyMjAwMGpyeDAxYXJ6M2JhaDAiLCJyb2xlIjoiY21pYmM3bGN1MDAwMHE2djJucXdnZ3l1eCIsImVtYWlsIjoidmludXNnb3lhbmlAZ21haWwuY29tIiwic3RvcmVfaWQiOiJjbWljcTJtdXAwMDA1cTZsZmp6OThoMnlkIiwiZXhwIjoxNzY0MTM0NDM4fQ.Y1dYvKOV7bPSJ_khUoOvaRURGRDJ17nNmn2PqDbCVRw`,
+          Authorization: `Bearer ${token}`,
           'Content-Type': 'application/json',
         },
       }
     );
-    // console.log('from add cat',res);
-    
+
+    console.log('from add cat', res.data);
+
     return res.data;
-    
-} catch (error) {
-      
+
+  } catch (error) {
+
+
     // throw error;
-    return error;
+    return undefined;
   }
 };
 
@@ -122,49 +130,79 @@ export default addcategorie;
 
 
 
-const getToken = () => {
-  return localStorage.getItem('access_token') || 
-         'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImNtaWN6dDZyMjAwMGpyeDAxYXJ6M2JhaDAiLCJyb2xlIjoiY21pYmM3bGN1MDAwMHE2djJucXdnZ3l1eCIsImVtYWlsIjoidmludXNnb3lhbmlAZ21haWwuY29tIiwic3RvcmVfaWQiOiJjbWljcTJtdXAwMDA1cTZsZmp6OThoMnlkIiwiZXhwIjoxNzY0MTM0NDM4fQ.Y1dYvKOV7bPSJ_khUoOvaRURGRDJ17nNmn2PqDbCVRw';
-};
 
-export const getCategoryById = async (categoryId: string):Promise<Category> => {
+export const getCategoryById = async (categoryId: string): Promise<getCatByIdTypes | undefined> => {
   try {
-    const url = `${BASE_URL}/seller/${STORE_ID}/get-categoryById?id=${categoryId}`;
 
-    const response = await axios.get<Category>(url, {
+    const url = `${BASE_URL}/seller/${STORE_ID}/get-categoryById?id=${categoryId}`;
+    const token = await getToken();
+    console.log(categoryId, token);
+
+
+    const response = await axios.get<getCatByIdTypes>(url, {
       headers: {
-        Authorization: `Bearer ${getToken()}`,
+        Authorization: `Bearer ${token}`,
         'Content-Type': 'application/json',
       },
     });
-
+    console.log('data is', response.data.data);
+    alert('...');
     return response.data;
+
   } catch (error: any) {
+
     const msg = error.response?.data?.message || error.message || 'Failed to fetch category';
     console.error('getCategoryById error:', msg);
-    throw new Error(msg);
+    alert('error')
+    return undefined;
   }
 };
 
 export const updateCategory = async (
-  storeId: string,
-  slug: string,
-  category: Category
+  id:string,
+  category: Category_
 ) => {
-    try {
-        const res = await axios.patch(
-          `${BASE_URL}/seller/${storeId}/update-category?id=${slug}`,
-          category,
-          {
-            headers: {
-              "Content-Type": "application/json",
-              'Authorization': `Bearer ${TOKEN}`,
-            }
-          }
-        );
-        console.log('from update category.......',res.data);
-        return res.data;
-    } catch (error) {
-       throw error;
-    }
+  try {
+    const token = await getToken();
+
+    const res = await axios.patch(
+      `${BASE_URL}/seller/${STORE_ID}/update-category?id=${id}`,
+      category,
+      {
+        headers: {
+          "Content-Type": "application/json",
+          'Authorization': `Bearer ${token}`,
+        }
+      }
+    );
+    console.log('from update category.......', res.data);
+
+    return res.data;
+
+  } catch (error) {
+      
+    throw error;
+  }
 };
+
+export const deleteCategory = async (id: string):Promise<delCatResTypes | undefined> => {
+
+  try {
+
+    const token = await getToken();
+
+    const res = await axios.delete<delCatResTypes>(
+      `${BASE_URL}/seller/${STORE_ID}/delete-category?id=${id}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+    })
+    return res.data;
+  } catch (error) {
+    alert('something went wrong...');
+    return;
+
+  }
+
+}

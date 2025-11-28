@@ -39,7 +39,8 @@ export interface useAuthStoreTypes {
     loading:boolean,
     message:String | null,
     loginData:LoginData | null,
-    uservarifyData: UserData | null
+    uservarifyData: UserData | null,
+    isSignUp:boolean,
     handleuserLogin:(email:string,password:string) => Promise<void>,
     handleUserSignup:(name:string,email:string,password:string)=>Promise<void>,
     handleUserVarify:(email:string,otp:string)=>Promise<void>

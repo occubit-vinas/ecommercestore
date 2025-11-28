@@ -1,13 +1,18 @@
 'use client'
 import { useState } from "react";
-import { CategoryPayload, FilterOption } from "@/types/category";
+// import { CategoryPayload, FilterOption } from "@/types/category";
+import { FilterOption, CategoryPayload } from "@/types/category/allcategory.types";
 import addcategorie from "@/servicies/category/category.service";
+import { useCategoryStore } from "@/stores/category/category";
 export default function AddCategoryPage() {
+
+    const {loading,createCategory} = useCategoryStore();
+
     const [name, setName] = useState("");
     const [imageUrl, setImageUrl] = useState("");
     const [parentId, setParentId] = useState("");
 
-    const [loading, setloading] = useState<boolean>(false);
+    
 
     const [filters, setFilters] = useState<FilterOption[]>([
         { name: "", type: "SELECT", options: [""], isRequired: true },
@@ -19,7 +24,7 @@ export default function AddCategoryPage() {
 
     const updateFilter = (index: number, key: keyof FilterOption, value: any) => {
         const updated = [...filters];
-        updated[index][key] = value;
+        (updated[index][key] as string) = value;
         setFilters(updated);
     };
 
@@ -36,22 +41,17 @@ export default function AddCategoryPage() {
     };
 
     const submitForm = async () => {
-        setloading(true);
+
         const payload: CategoryPayload = {
-            name:name,
+            name: name,
             image_url: imageUrl,
             filter: filters,
             parent_category_id: parentId,
         };
 
-        try {
-            const res = await addcategorie(payload);
-            // console.log(res);
-            alert(res.message);
-        } catch (err) {
-            // alert("Error creating category");
-        }
-        setloading(false);
+        await createCategory(payload);
+        // console.log('add cat data is',payload);
+        
     };
 
     return (
@@ -174,7 +174,7 @@ export default function AddCategoryPage() {
                     className="mt-6 ml-4 px-6 py-2 bg-green-600 text-white rounded"
                     disabled={loading}
                 >
-                    Add Category
+                    {!loading ? 'Add Category':'Loading'}
                 </button>
                 {/* <p>{res.statusCode}</p> */}
             </div>

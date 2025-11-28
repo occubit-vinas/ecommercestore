@@ -1,5 +1,6 @@
 // types/category.ts  (or put inside your service file)
 import { Category_ } from "./cat_update.types";
+
 export interface Category {
   id: string;
   name: string;
@@ -26,22 +27,26 @@ export interface allCategoryType {
   success: boolean;
 }
 
-
-interface cat{
+interface cat {
   id?: string;
   name: string;
   isActive?: boolean;
-  createdAt?: string;
+  createdAt?: string | null;   
+  
 }
 
 export interface CategoryStore{
-    categorie:Category_[],
+    categorie:Category_ | null,
+    // categorie:getCatByIdTypes,
     categories:cat[][],
     loading:boolean,
-    error:string,
-    responce:allCategoryType,
+    error:string | null,
+    // responce:allCategoryType ,
     fetchcategories:()=>void,
     fetchCategorieById:(id:string)=>void,
+    createCategory:(data:CategoryPayload)=>void,
+    handleDelCategory:(id:string)=>void,
+    handleUpdateCategory:(id:string,catefory:Category_)=>void
 }
 
 
@@ -57,4 +62,25 @@ export interface CategoryPayload {
   image_url: string;
   filter: FilterOption[];
   parent_category_id: string;
+}
+
+export interface getCatByIdTypes{
+    statusCode:number,
+    data:Category_,
+    message:string,
+    success:string
+}
+
+export interface addCatResTypes{
+    statusCode:number,
+    data:any,
+    message:string,
+    success:string,
+}
+
+export interface delCatResTypes{
+    statusCode:number,
+    data:any,
+    message:string,
+    success:string,
 }

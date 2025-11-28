@@ -1,10 +1,12 @@
+'use server'
 import axios from "axios";
-import Cookies from "js-cookie";
+import { cookies } from "next/headers";
 import { BASE_URL, STORE_ID } from "@/config/api";
 import { LoginApiResponse } from "@/types/auth.types";
 import { varifyUserApiTypes } from "@/types/auth.types";
 import { SignupApiTypes } from "@/types/auth.types";
 import { responce } from "@/stores/data";
+
 
 export const handleLogin = async (email: string, password: string) => {
     try {
@@ -15,8 +17,9 @@ export const handleLogin = async (email: string, password: string) => {
 
         const userData = res.data.data;
 
-        Cookies.set("token", userData.accessToken, { expires: 7 });
-        Cookies.set("user", JSON.stringify(userData), { expires: 7 });
+        const userCookie = await cookies();
+        userCookie.set('token',userData.accessToken,{maxAge:604800});
+        userCookie.set('user',JSON.stringify(userData),{maxAge:604800});
 
         return { success: true, data: userData };
     } catch (error: any) {
@@ -40,6 +43,7 @@ export const handleSignup = async (name: string, email: string, password: string
             role: 'Admin',
         })
         console.log('signup responce', responce);
+        
         return {success:true,message:responce.data};
 
     } catch (error: any) {
@@ -58,7 +62,7 @@ export const handleVarify = async (email: string, otp: string) => {
     } catch (error: any) {
         return {
             success: false,
-            message: error.response?.data?.message || "Network error",
+            data: error.response?.data?.message || "Network error",
         }
     };
 }

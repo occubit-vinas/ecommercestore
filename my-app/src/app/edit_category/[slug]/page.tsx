@@ -1,13 +1,35 @@
 "use client";
 
-import { useState } from "react";
+import { useState ,useEffect} from "react";
 import { useParams } from "next/navigation";
 import { Category_, Filter, Attribute } from "@/types/category/cat_update.types";
 import { updateCategory } from "@/servicies/category/category.service";
+import { useCategoryStore } from "@/stores/category/category";
+
 export default function UpdateCategoryPage() {
+
+  const {fetchCategorieById,handleUpdateCategory} = useCategoryStore();
+
+  const [initialData,setinitialData]=useState<any>();
+
   const { slug } = useParams();
-  const storeId = "cmicq2mup0005q6lfjz98h2yd";
+  // const storeId = "cmicq2mup0005q6lfjz98h2yd";
   console.log('update_cat is', slug);
+  console.log(typeof(slug));
+  
+
+useEffect(() => {
+  if (!slug || typeof slug !== "string") return;
+
+  const load = async () => {
+    const data = await fetchCategorieById(slug);
+    setinitialData(data);
+  };
+
+  load();
+}, [slug]);
+
+  
 
   const [loading,setloading]=useState(false);
 
@@ -42,11 +64,16 @@ export default function UpdateCategoryPage() {
     setCategory({ ...category, [field]: value });
   };
 
-  const updateFilter = (index: number, key: keyof Filter, value: any) => {
-    const newFilters = [...category.filters];
-    newFilters[index][key] = value;
-    setCategory({ ...category, filters: newFilters });
-  };
+  const updateFilter = <K extends keyof Filter>(
+  index: number,
+  key: K,
+  value: Filter[K]
+) => {
+  const newFilters = [...category.filters];
+  newFilters[index][key] = value; 
+  setCategory({ ...category, filters: newFilters });
+};
+
 
   const addFilterOption = (filterIndex: number) => {
     const updated = [...category.filters];
@@ -54,7 +81,7 @@ export default function UpdateCategoryPage() {
     setCategory({ ...category, filters: updated });
   };
 
-  const updateAttribute = (index: number, key: keyof Attribute, value: any) => {
+  const updateAttribute = <K extends keyof Attribute>(index: number, key: K, value: any) => {
     const updated = [...category.attributes];
     updated[index][key] = value;
     setCategory({ ...category, attributes: updated });
@@ -67,16 +94,12 @@ export default function UpdateCategoryPage() {
   };
 
   const submitUpdate = async () => {
-    try {
+    if (!slug || typeof slug !== "string") {
+    console.error("Slug is missing or invalid");
+    return;
+  }
       setloading(true);
-      await updateCategory(storeId, slug as string, category);
-      alert("Category updated successfully!");
-    } catch (err) {
-      alert("Error updating category");
-      console.log(err);
-    }finally{
-      setloading(false);
-    }
+      await handleUpdateCategory(slug,category);
   };
 
   return (
