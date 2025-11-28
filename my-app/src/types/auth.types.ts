@@ -37,12 +37,12 @@ export type SignupApiTypes = ApiResponse<SignupData>;
 
 export interface useAuthStoreTypes {
     loading:boolean,
-    message:String,
-    loginData:LoginData,
+    message:String | null,
+    loginData:LoginData | null,
+    uservarifyData: UserData | null
     handleuserLogin:(email:string,password:string) => Promise<void>,
     handleUserSignup:(name:string,email:string,password:string)=>Promise<void>,
     handleUserVarify:(email:string,otp:string)=>Promise<void>
-    
 }
 
 export  interface signupForm {
