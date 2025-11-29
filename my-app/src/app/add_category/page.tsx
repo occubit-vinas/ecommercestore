@@ -6,13 +6,13 @@ import addcategorie from "@/servicies/category/category.service";
 import { useCategoryStore } from "@/stores/category/category";
 export default function AddCategoryPage() {
 
-    const {loading,createCategory} = useCategoryStore();
+    const { loading, createCategory } = useCategoryStore();
 
     const [name, setName] = useState("");
     const [imageUrl, setImageUrl] = useState("");
     const [parentId, setParentId] = useState("");
 
-    
+
 
     const [filters, setFilters] = useState<FilterOption[]>([
         { name: "", type: "SELECT", options: [""], isRequired: true },
@@ -45,13 +45,20 @@ export default function AddCategoryPage() {
         const payload: CategoryPayload = {
             name: name,
             image_url: imageUrl,
-            filter: filters,
+            filters: filters,
             parent_category_id: parentId,
         };
 
         await createCategory(payload);
         // console.log('add cat data is',payload);
-        
+        setName('');
+        setImageUrl('');
+        setParentId('');
+        setFilters([
+            { name: "", type: "SELECT", options: [""], isRequired: true }
+        ]);
+
+
     };
 
     return (
@@ -174,7 +181,7 @@ export default function AddCategoryPage() {
                     className="mt-6 ml-4 px-6 py-2 bg-green-600 text-white rounded"
                     disabled={loading}
                 >
-                    {!loading ? 'Add Category':'Loading'}
+                    {!loading ? 'Add Category' : 'Loading'}
                 </button>
                 {/* <p>{res.statusCode}</p> */}
             </div>

@@ -24,4 +24,8 @@ export interface Category_ {
   filters: Filter[];
   attributes: Attribute[];
   parent_category_id: string;
+  isActive?:boolean;
+  storeId?:string;
+  parentcategorieId?:string,
+  
 }

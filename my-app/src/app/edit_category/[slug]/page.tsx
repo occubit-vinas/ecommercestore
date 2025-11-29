@@ -1,107 +1,126 @@
 "use client";
 
-import { useState ,useEffect} from "react";
+import { useState, useEffect } from "react";
 import { useParams } from "next/navigation";
 import { Category_, Filter, Attribute } from "@/types/category/cat_update.types";
-import { updateCategory } from "@/servicies/category/category.service";
 import { useCategoryStore } from "@/stores/category/category";
+import { cleanAttributes, cleanFilters } from "@/utils/helper";
 
 export default function UpdateCategoryPage() {
-
-  const {fetchCategorieById,handleUpdateCategory} = useCategoryStore();
-
-  const [initialData,setinitialData]=useState<any>();
+  const { fetchCategorieById, categorie, loading, handleUpdateCategory } =
+    useCategoryStore();
 
   const { slug } = useParams();
-  // const storeId = "cmicq2mup0005q6lfjz98h2yd";
-  console.log('update_cat is', slug);
-  console.log(typeof(slug));
-  
 
-useEffect(() => {
-  if (!slug || typeof slug !== "string") return;
+  const [category, setCategory] = useState<Category_ | null>(null);
 
-  const load = async () => {
-    const data = await fetchCategorieById(slug);
-    setinitialData(data);
-  };
 
-  load();
-}, [slug]);
-
-  
-
-  const [loading,setloading]=useState(false);
-
-  const [category, setCategory] = useState<Category_>({
-    name: "",
-    slug: "",
-    image_url: "",
-    desc: "",
-    sort_order: 0,
-    is_active: true,
-    filters: [
-      {
-        name: "",
-        type: "SELECT",
-        options: [""],
-        isRequired: false,
-      },
-    ],
-    attributes: [
-      {
-        name: "",
-        type: "TEXT",
-        options: [],
-        default_value: "",
-        isRequired: false,
-      },
-    ],
-    parent_category_id: "",
+  const mapApiCategoryToForm = (api: any): Category_ => ({
+    name: api.name ?? "",
+    slug: api.slug ?? "",
+    image_url: api.image_url ?? "",
+    desc: api.desc ?? "",
+    sort_order: api.sort_order ?? 0,
+    is_active: api.is_active ?? true,
+    // filters: api.filters ?? [],
+    filters:cleanFilters(api.filters)?? [],
+    // attributes: api.attributes ?? [],
+    attributes:cleanAttributes(api.attributes) ?? [],
+    parent_category_id: api.parent_category_id ?? "",
   });
 
+
+  useEffect(() => {
+    if (!slug || typeof slug !== "string") return;
+    fetchCategorieById(slug);
+  }, [slug]);
+
+  useEffect(() => {
+    if (!categorie) return;
+    setCategory(mapApiCategoryToForm(categorie));
+  }, [categorie]);
+
+  if (loading || !category) {
+    return <div className="p-4">Loading category…</div>;
+  }
+
+
   const updateField = (field: keyof Category_, value: any) => {
-    setCategory({ ...category, [field]: value });
+    setCategory((prev) => (prev ? { ...prev, [field]: value } : prev));
   };
+ 
 
   const updateFilter = <K extends keyof Filter>(
-  index: number,
-  key: K,
-  value: Filter[K]
-) => {
-  const newFilters = [...category.filters];
-  newFilters[index][key] = value; 
-  setCategory({ ...category, filters: newFilters });
-};
+    index: number,
+    key: K,
+    value: Filter[K]
+  ) => {
+    setCategory((prev) => {
+      if (!prev) return prev;
 
+      const updated = [...prev.filters];
+      updated[index] = { ...updated[index], [key]: value };
 
-  const addFilterOption = (filterIndex: number) => {
-    const updated = [...category.filters];
-    updated[filterIndex].options.push("");
-    setCategory({ ...category, filters: updated });
+      return { ...prev, filters: updated };
+    });
   };
 
-  const updateAttribute = <K extends keyof Attribute>(index: number, key: K, value: any) => {
-    const updated = [...category.attributes];
-    updated[index][key] = value;
-    setCategory({ ...category, attributes: updated });
+  const addFilterOption = (filterIndex: number) => {
+    setCategory((prev) => {
+      if (!prev) return prev;
+
+      const updated = [...prev.filters];
+      updated[filterIndex] = {
+        ...updated[filterIndex],
+        options: [...updated[filterIndex].options, ""],
+      };
+
+      return { ...prev, filters: updated };
+    });
+  };
+
+  const updateAttribute = <K extends keyof Attribute>(
+    index: number,
+    key: K,
+    value: Attribute[K]
+  ) => {
+    setCategory((prev) => {
+      if (!prev) return prev;
+
+      const updated = [...prev.attributes];
+      updated[index] = { ...updated[index], [key]: value };
+
+      return { ...prev, attributes: updated };
+    });
   };
 
   const addAttributeOption = (attrIndex: number) => {
-    const updated = [...category.attributes];
-    updated[attrIndex].options.push("");
-    setCategory({ ...category, attributes: updated });
+    setCategory((prev) => {
+      if (!prev) return prev;
+
+      const updated = [...prev.attributes];
+      updated[attrIndex] = {
+        ...updated[attrIndex],
+        options: [...updated[attrIndex].options, ""],
+      };
+
+      return { ...prev, attributes: updated };
+    });
   };
 
   const submitUpdate = async () => {
     if (!slug || typeof slug !== "string") {
-    console.error("Slug is missing or invalid");
-    return;
-  }
-      setloading(true);
-      await handleUpdateCategory(slug,category);
-  };
+      console.error("Slug is missing or invalid");
+      return;
+    }
 
+    if (!category) {
+      console.error("Category state is empty");
+      return;
+    }
+
+    await handleUpdateCategory(slug, category);
+  };
   return (
     <div className='flex justify-center bg-white '>
 
@@ -298,7 +317,7 @@ useEffect(() => {
           onClick={submitUpdate}
           disabled={loading}
         >
-          Update Category
+         {loading ? <p>Loading</p> : <p> Update Category</p>}
         </button>
       </div>
     </div>

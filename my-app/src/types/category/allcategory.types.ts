@@ -60,7 +60,7 @@ export interface FilterOption {
 export interface CategoryPayload {
   name: string;
   image_url: string;
-  filter: FilterOption[];
+  filters: FilterOption[];
   parent_category_id: string;
 }
 

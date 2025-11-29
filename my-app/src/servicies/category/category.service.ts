@@ -76,22 +76,29 @@ import { Category_ } from '@/types/category/cat_update.types';
 import { CategoryPayload } from '@/types/category/allcategory.types';
 import { getCatByIdTypes } from '@/types/category/allcategory.types';
 import { addCatResTypes } from '@/types/category/allcategory.types';
+// import { mapFormToApiPayload } from '@/utils/helper';
 
 export const getAllCategory = async (): Promise<Category[]> => {
   try {
+
+    const token = await getToken();
+    console.log(token);
+    
     const response = await axios.get<allCategoryType>(
-      `${BASE_URL}/${STORE_ID}/all-categories`,
+      `${BASE_URL}/seller/${STORE_ID}/all-categories`,
       {
         headers: {
-          'Authorization': `Bearer ${TOKEN}`,
+          'Authorization': `Bearer ${token}`,
+          // 'Authorization': `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImNtaWl1ZzRrbzAwMHVwaDAxanVkb281ZWciLCJyb2xlIjoiY21paGNxejY5MDAwMHE2MThoY2o5Zms1OCIsImVtYWlsIjoidmludXNnb3lhbmlAZ21haWwuY29tIiwic3RvcmVfaWQiOm51bGwsImV4cCI6MTc2NDQ3NTcxM30.l0u1H23jJkC4_ifmwvg2hwytf4QqFEmI4QwFSCdg7Yc`,
           'Content-Type': 'application/json',
         },
       }
     );
-    // Return only the data part (array of root categories)
+    
     return response.data.data || [];
 
   } catch (error: any) {
+    
     const message = error.response?.data?.message || error.message || 'Failed to fetch categories';
     console.error('getAllCategory error:', message);
     throw new Error(message);
@@ -102,9 +109,12 @@ const addcategorie = async (data: CategoryPayload): Promise<addCatResTypes | und
   try {
     // const userCookies = await cookies();
     // const token = userCookies.get('token');
-    const token = getToken();
+    
+    const token = await getToken();
+    console.log('hello there',token);
+
     const res = await axios.post<addCatResTypes>(
-      `${BASE_URL}/seller/cmicq2mup0005q6lfjz98h2yd/create-category`,
+      `${BASE_URL}/seller/${STORE_ID}/create-category`,
       data,
       {
         headers: {
@@ -119,17 +129,14 @@ const addcategorie = async (data: CategoryPayload): Promise<addCatResTypes | und
     return res.data;
 
   } catch (error) {
-
-
     // throw error;
+    console.log('err is',error);
+    
     return undefined;
   }
 };
 
 export default addcategorie;
-
-
-
 
 export const getCategoryById = async (categoryId: string): Promise<getCatByIdTypes | undefined> => {
   try {
@@ -146,7 +153,7 @@ export const getCategoryById = async (categoryId: string): Promise<getCatByIdTyp
       },
     });
     console.log('data is', response.data.data);
-    alert('...');
+    
     return response.data;
 
   } catch (error: any) {
@@ -158,29 +165,28 @@ export const getCategoryById = async (categoryId: string): Promise<getCatByIdTyp
   }
 };
 
-export const updateCategory = async (
-  id:string,
-  category: Category_
-) => {
+export const updateCategory = async (id: string, category: Category_) => {
   try {
     const token = await getToken();
-
+    console.log('to be updated...',category);
+    
     const res = await axios.patch(
       `${BASE_URL}/seller/${STORE_ID}/update-category?id=${id}`,
       category,
       {
         headers: {
-          "Content-Type": "application/json",
-          'Authorization': `Bearer ${token}`,
-        }
+          Authorization: `Bearer ${token}`,
+        },
       }
     );
-    console.log('from update category.......', res.data);
+
+    console.log("UPDATE PAYLOAD --->", category);
+    console.log("UPDATE RESPONSE --->", res.data);
 
     return res.data;
 
-  } catch (error) {
-      
+  } catch (error: any) {
+    console.error("API Update Error:", error?.response?.data || error);
     throw error;
   }
 };
@@ -190,7 +196,7 @@ export const deleteCategory = async (id: string):Promise<delCatResTypes | undefi
   try {
 
     const token = await getToken();
-
+    
     const res = await axios.delete<delCatResTypes>(
       `${BASE_URL}/seller/${STORE_ID}/delete-category?id=${id}`, {
       headers: {
@@ -200,9 +206,10 @@ export const deleteCategory = async (id: string):Promise<delCatResTypes | undefi
     })
     return res.data;
   } catch (error) {
-    alert('something went wrong...');
+    // alert('something went wrong...');
+    console.log('went wrong');
+    
     return;
 
   }
-
 }

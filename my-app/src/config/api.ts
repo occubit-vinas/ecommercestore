@@ -1,3 +1,4 @@
 export const BASE_URL='https://backend.occubitsolution.com/api';
 export const TOKEN='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImNtaWN6dDZyMjAwMGpyeDAxYXJ6M2JhaDAiLCJyb2xlIjoiY21pYmM3bGN1MDAwMHE2djJucXdnZ3l1eCIsImVtYWlsIjoidmludXNnb3lhbmlAZ21haWwuY29tIiwic3RvcmVfaWQiOiJjbWljcTJtdXAwMDA1cTZsZmp6OThoMnlkIiwiZXhwIjoxNzY0MzA0MTY2fQ.JLGruphpfJx-lGXhSMPpiiwDEgItQOWd2rgP_RC13yM';
-export const STORE_ID='cmicq2mup0005q6lfjz98h2yd';
+// export const STORE_ID='cmicq2mup0005q6lfjz98h2yd';
+export const STORE_ID='cmihcuz8c000gph01q3uwepj4';
