@@ -7,6 +7,7 @@ import { useRouter } from "next/navigation";
 export default function Signup() {
 
   const {loading,message,handleUserSignup,isSignUp} = useAuthStore();
+
   const [formData, setFormData] = useState<signupForm>({
     name: "",
     email: "",
@@ -25,6 +26,8 @@ export default function Signup() {
       
       router.push(`/varify-otp?=${formData.email}`);
     }
+    console.log('res is..',message);
+    
     setFormData({name:"",email:"",password:""});
   };
 

@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useAuthStore } from "@/stores/auth/auth";
-
+import { useRouter } from "next/navigation";
 export default function Login() {
   const { handleuserLogin, loading, message} = useAuthStore();
 
@@ -10,6 +10,7 @@ export default function Login() {
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
 
+  const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -17,9 +18,12 @@ export default function Login() {
     console.log(message);
     setEmail('');
     setPassword('');
+    if(message === "Login success"){
+
+      router.push('/category');
+    }
     
   };
-  
   return (
     <div className="min-h-screen flex justify-center items-center bg-gray-900  flex-col gap-4">
       

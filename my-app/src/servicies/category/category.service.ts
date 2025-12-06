@@ -94,13 +94,14 @@ export const getAllCategory = async (): Promise<Category[]> => {
         },
       }
     );
+    console.log('from api',response.data.data);
     
     return response.data.data || [];
 
   } catch (error: any) {
     
     const message = error.response?.data?.message || error.message || 'Failed to fetch categories';
-    console.error('getAllCategory error:', message);
+    console.log('getAllCategory error:', message);
     throw new Error(message);
   }
 };
@@ -130,7 +131,8 @@ const addcategorie = async (data: CategoryPayload): Promise<addCatResTypes | und
 
   } catch (error) {
     // throw error;
-    console.log('err is',error);
+    console.log('err is',error?.response?.data);
+    console.log('err is',error?.response?.status);
     
     return undefined;
   }

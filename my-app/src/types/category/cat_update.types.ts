@@ -17,7 +17,7 @@ export interface Category_ {
   id?:string,
   name: string;
   slug: string;
-  image_url: string;
+  image_url: string | null;
   desc: string;
   sort_order: number;
   is_active: boolean;

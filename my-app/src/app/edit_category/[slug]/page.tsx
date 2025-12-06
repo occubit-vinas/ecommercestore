@@ -126,13 +126,13 @@ export default function UpdateCategoryPage() {
 
       <div className="max-w-[400px] mx-auto p-8 bg-white text-black">
         <p className='text-black'>{slug}</p>
-        <h1 className="text-3xl font-bold mb-6">Update Category - <p className='text-black'>{slug}</p></h1>
+        <h1 className="text-3xl font-bold mb-6">Update Category - <p className='text-black'>{category.name}</p></h1>
 
         <div className="space-y-4">
           <input
             className="w-full p-2 border rounded"
             placeholder="Name"
-            value={category.name}
+            value={category?.name}
             onChange={(e) => updateField("name", e.target.value)}
           />
 

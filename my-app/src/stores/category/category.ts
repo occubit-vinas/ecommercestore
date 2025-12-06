@@ -14,37 +14,44 @@ export const useCategoryStore = create<CategoryStore>((set) => ({
     error: null,
     // responce: responce,
     categorie: null,
+
     fetchcategories: async () => {
         try {
             set({ loading: true, error: null });
+
             function getGlobalCategory(node: any, list: any) {
                 if (!node) return;
                 if (typeof node.name === 'string') {
                     // list.push(node.name);
                     // list.push([node.name,node.isActive,node.createdAt])
-                    list.push({ id: node.id, name: node.name, isActive: node.isActive, creratedAt: node.createdAt });
+                    list.push({ id: node.id, name: node.name, isActive: node.isActive, createdAt: node.createdAt });
                 }
 
-                // Make sure children is always an array before iterating
                 const children = Array.isArray(node.children) ? node.children : [];
                 for (const child of children) {
                     getGlobalCategory(child, list);
                 }
             }
 
-            // Usage for your response:
             const responce = await getAllCategory();
-            console.log('cat res is', responce);
+            console.log('cat res isvvv', responce);
+            
+            set({
+                categories: responce,
+                loading: false,
+            })
 
             const myarr1 = [];
+
             for (let i = 0; i < responce.length; i++) {
                 myarr1[i] = [];
                 getGlobalCategory(responce[i], myarr1[i]);
             }
-            set({
-                categories: myarr1,
-                loading: false,
-            })
+
+            // set({
+            //     categories: myarr1,
+            //     loading: false,
+            // })
 
 
         } catch (error: any) {
@@ -54,6 +61,7 @@ export const useCategoryStore = create<CategoryStore>((set) => ({
             });
         }
     },
+
     fetchCategorieById: async (id: string) => {
 
 

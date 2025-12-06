@@ -19,6 +19,7 @@ export const useAuthStore = create<useAuthStoreTypes>()(
         const { isValid, errors } = validateLoginCredentials(email, password);
 
         if (!isValid) {
+          
           set({
             message: errors?.email || errors?.password,
             loading: false,
@@ -29,6 +30,7 @@ export const useAuthStore = create<useAuthStoreTypes>()(
         const { success, data, message } = await handleLogin(email, password);
 
         if (!success) {
+          alert('error');
           set({
             message: message || "Email or password is wrong",
             loading: false,
@@ -54,6 +56,7 @@ export const useAuthStore = create<useAuthStoreTypes>()(
             message: errors?.name || errors?.email || errors?.password,
             loading: false,
           });
+          
           return;
         }
 
