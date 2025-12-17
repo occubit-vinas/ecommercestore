@@ -32,19 +32,19 @@ interface cat {
   name: string;
   isActive?: boolean;
   createdAt?: string | null;   
-  
+  children:cat[],
 }
 
 export interface CategoryStore{
     categorie:Category_ | null,
     // categorie:getCatByIdTypes,
-    categories:cat[][],
+    categories:cat[],
     loading:boolean,
     error:string | null,
     // responce:allCategoryType ,
     fetchcategories:()=>void,
     fetchCategorieById:(id:string)=>void,
-    createCategory:(data:CategoryPayload)=>void,
+    createCategory:(data:Category_)=>void,
     handleDelCategory:(id:string)=>void,
     handleUpdateCategory:(id:string,catefory:Category_)=>void
 }

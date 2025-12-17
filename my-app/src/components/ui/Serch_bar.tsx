@@ -2,14 +2,15 @@
 
 import React from "react";
 import Image from "next/image";
-import { SearchBarProps } from "@/types/ui.types";
+import { SearchBarProps_ } from "@/types/ui.types";
 import { Input } from "./input";
-const Serch_bar: React.FC<SearchBarProps> = ({
+const Serch_bar: React.FC<SearchBarProps_> = ({
   value,
   onChange,
   placeholder = "Search here...",
-  className = "",
+className = ""
 }) => {
+
   return (
     <div
       className={`h-[40px] w-[280px] rounded-[16px] border-[0.5px] border-[#4D4F5240] px-[10px] flex items-center gap-[8px] backdrop-blur-[10px] ${className}`}
@@ -25,9 +26,16 @@ const Serch_bar: React.FC<SearchBarProps> = ({
       <Input
         type="text"
         value={value}
-        onChange={(e) => onChange(e.target.value)}
+        onChange={onChange}
         placeholder={placeholder}
-        className="outline-none bg-transparent w-full text-14-nml placeholder:text-[#8A8A8A] border-none"
+        className="outline-none bg-transparent w-full text-14-nml placeholder:text-[#8A8A8A]   border-0
+          focus:border-0
+          focus:outline-none
+          focus:ring-0
+          focus-visible:ring-0
+          focus-visible:ring-offset-0
+          outline-none
+          shadow-none"
       />
     </div>
   );

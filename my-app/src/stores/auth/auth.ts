@@ -3,9 +3,11 @@ import { persist } from "zustand/middleware";
 import { handleLogin, handleSignup, handleVarify } from "@/servicies/auth/login.service";
 import { validateLoginCredentials, validateSignupCredentials } from "@/utils/validation";
 import { useAuthStoreTypes } from "@/types/auth.types";
-
+import { setEncryptedItem } from "@/utils/encryption";
 export const useAuthStore = create<useAuthStoreTypes>()(
+
   persist(
+
     (set, get) => ({
       loading: false,
       message: null,
@@ -17,34 +19,31 @@ export const useAuthStore = create<useAuthStoreTypes>()(
         set({ loading: true });
 
         const { isValid, errors } = validateLoginCredentials(email, password);
-
         if (!isValid) {
-          
-          set({
-            message: errors?.email || errors?.password,
-            loading: false,
-          });
-          return;
+          set({ message: errors?.email || errors?.password, loading: false });
+          return { success: false };
         }
 
-        const { success, data, message } = await handleLogin(email, password);
+        const result = await handleLogin(email, password);
 
-        if (!success) {
-          alert('error');
-          set({
-            message: message || "Email or password is wrong",
-            loading: false,
-          });
-          return;
+        if (!result.success) {
+          set({ message: result.message, loading: false });
+          return { success: false };
         }
 
         set({
-          loginData: data,
+          loginData: result.data,
           message: "Login success",
           loading: false,
         });
-        return;
+
+        // optional (client-only)
+        // localStorage.setItem("accessToken", result.data.accessToken);
+        setEncryptedItem('accessToken', result.data.accessToken);
+
+        return { success: true };
       },
+
 
       handleUserSignup: async (name: string, email: string, password: string) => {
         set({ loading: true });
@@ -56,7 +55,6 @@ export const useAuthStore = create<useAuthStoreTypes>()(
             message: errors?.name || errors?.email || errors?.password,
             loading: false,
           });
-          
           return;
         }
 
@@ -73,7 +71,7 @@ export const useAuthStore = create<useAuthStoreTypes>()(
           return;
         }
 
-        const {success , data} = await handleVarify(email, finalOtp);
+        const { success, data } = await handleVarify(email, finalOtp);
 
         if (success) {
           set({
@@ -84,13 +82,23 @@ export const useAuthStore = create<useAuthStoreTypes>()(
         } else {
           set({ message: data, loading: false });
         }
-        return;
       },
+
+      // logout: () => {
+      //   set({
+      //     loginData: null,
+      //     uservarifyData: null,
+      //     isSignUp: false,
+      //   });
+      // },
     }),
     {
       name: "auth-store",
+
       partialize: (state) => ({
+        loginData: state.loginData,
         uservarifyData: state.uservarifyData,
+        isSignUp: state.isSignUp,
       }),
     }
   )

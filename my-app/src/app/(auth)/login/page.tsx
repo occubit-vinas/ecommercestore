@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { useAuthStore } from "@/stores/auth/auth";
 import { useRouter } from "next/navigation";
 export default function Login() {
-  const { handleuserLogin, loading, message} = useAuthStore();
+  const { handleuserLogin, loading, message,uservarifyData} = useAuthStore();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -13,19 +13,20 @@ export default function Login() {
   const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    await handleuserLogin(email, password);
-    console.log(message);
-    setEmail('');
-    setPassword('');
-    if(message === "Login success"){
+  e.preventDefault();
 
-      router.push('/category');
-    }
-    
-  };
+  const result:any = await handleuserLogin(email, password);
+
+  setEmail("");
+  setPassword("");
+
+  if (result?.success) {
+    router.push("/category");
+  }
+};
+
   return (
-    <div className="min-h-screen flex justify-center items-center bg-gray-900  flex-col gap-4">
+    <div className="min-h-full flex justify-center items-center bg-gray-600  flex-col gap-4 w-[1600px]">
       
       <form
         onSubmit={handleSubmit}
@@ -74,7 +75,7 @@ export default function Login() {
           {!loading ? "Login" : "Loading..."}
         </button>
       </form>
-      <p>{message}</p>
+      <p className='bg-white'>{message}</p>
     </div>
   );
 }

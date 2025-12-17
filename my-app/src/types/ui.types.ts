@@ -13,7 +13,6 @@ export interface PaginationProps {
   maxVisiblePages?: number;
 }
 
-
 export interface ThemeState {
   theme: 'light' | 'dark';
   toggleTheme: () => void;
@@ -33,3 +32,40 @@ export interface CustomCheckboxProps {
   checked: boolean;
   onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
 }
+
+export interface paginationType {
+  page:number,
+  limit:number,
+  pages:number,
+  total:number,
+}
+
+export type DateRangeValue = {
+  from: Date | null | string;
+  to: Date | null | string;
+};
+
+export type DateRangeFilterProps = {
+  value: DateRangeValue | string | Date;
+  onChange: (value: DateRangeValue) => void;
+  placeholder?: string;
+  className?: string;
+};
+
+
+export interface Pagination {
+  page: number;
+  limit: number;
+  total: number;
+  pages: number;
+  has_next: boolean;
+  has_prev: boolean;
+}
+
+
+export type SearchBarProps_ = {
+  value: string;
+  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void | string;
+  placeholder?: string;
+  className?: string;
+};

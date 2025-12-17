@@ -21,3 +21,13 @@ export function cleanAttributes(attributes: any[]) {
     isRequired: !!a.isRequired,
   }));
 }
+
+export function calculatePercentage({total_c, use_c}:{total_c:number,use_c:number}):number{
+  
+  if (total_c === 0) {
+    return 0; // Avoid division by zero
+  }
+  
+  const percentage = (use_c / total_c) * 100;
+  return Number(percentage.toFixed(2));
+}

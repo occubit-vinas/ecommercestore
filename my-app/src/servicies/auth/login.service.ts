@@ -9,27 +9,33 @@ import { responce } from "@/stores/data";
 
 
 export const handleLogin = async (email: string, password: string) => {
-    try {
-        const res = await axios.post<LoginApiResponse>(
-            `${BASE_URL}/auth/login`,
-            { email, password }
-        );
+  try {
+    const res = await axios.post(
+      `${BASE_URL}/auth/login`,
+      { email, password }
+    );
 
-        const userData = res.data.data;
+    const userData = res.data.data;
+    // cookies().set("token", userData.accessToken, {
+    //   maxAge: 60 * 60 * 24 * 7,
+    //   httpOnly: true,
+    //   secure: true,
+    //   path: "/",
+    // });
 
-        const userCookie = await cookies();
-        userCookie.set('token',userData.accessToken,{maxAge:604800});
-        userCookie.set('user',JSON.stringify(userData),{maxAge:604800});
+    // cookies().set("user", JSON.stringify(userData), {
+    //   maxAge: 60 * 60 * 24 * 7,
+    //   path: "/",
+    // });
 
-        return { success: true, data: userData };
-    } catch (error: any) {
-        console.log("login failed:", error?.response?.data);
-
-        return {
-            success: false,
-            message: error?.response?.data?.message || "Login failed",
-        };
-    }
+    localStorage.setItem('login-data',userData);
+    return { success: true, data: userData };
+  } catch (error: any) {
+    return {
+      success: false,
+      message: error?.response?.data?.message || "Login failed",
+    };
+  }
 };
 
 

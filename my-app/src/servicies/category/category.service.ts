@@ -1,8 +1,10 @@
 // 'use server'
 import axios from 'axios';
-import { BASE_URL, STORE_ID, TOKEN } from '@/config/api';
+import { BASE_URL, STORE_ID } from '@/config/api';
 // import { cookies } from "next/headers";
 import { getToken } from '@/utils/cookie';
+import { getDecryptedItem } from '@/utils/encryption';
+
 // export function getGlobalCategory(node, list) {
 //   if (!node) return;                    
 //   if (typeof node.name === 'string') {  
@@ -78,11 +80,14 @@ import { getCatByIdTypes } from '@/types/category/allcategory.types';
 import { addCatResTypes } from '@/types/category/allcategory.types';
 // import { mapFormToApiPayload } from '@/utils/helper';
 
+// const token = localStorage.getItem('accessToken');
+const token = getDecryptedItem('accessToken');
+
 export const getAllCategory = async (): Promise<Category[]> => {
   try {
 
-    const token = await getToken();
-    console.log(token);
+    // const token = await getToken();
+    // console.log(token);
     
     const response = await axios.get<allCategoryType>(
       `${BASE_URL}/seller/${STORE_ID}/all-categories`,
@@ -106,7 +111,7 @@ export const getAllCategory = async (): Promise<Category[]> => {
   }
 };
 
-const addcategorie = async (data: CategoryPayload): Promise<addCatResTypes | undefined> => {
+const addcategorie = async (data: Category_): Promise<addCatResTypes | undefined> => {
   try {
     // const userCookies = await cookies();
     // const token = userCookies.get('token');
@@ -144,8 +149,8 @@ export const getCategoryById = async (categoryId: string): Promise<getCatByIdTyp
   try {
 
     const url = `${BASE_URL}/seller/${STORE_ID}/get-categoryById?id=${categoryId}`;
-    const token = await getToken();
-    console.log(categoryId, token);
+    // const token = await getToken();
+    // console.log(categoryId, token);
 
 
     const response = await axios.get<getCatByIdTypes>(url, {
@@ -169,7 +174,7 @@ export const getCategoryById = async (categoryId: string): Promise<getCatByIdTyp
 
 export const updateCategory = async (id: string, category: Category_) => {
   try {
-    const token = await getToken();
+    // const token = await getToken();
     console.log('to be updated...',category);
     
     const res = await axios.patch(
@@ -197,7 +202,7 @@ export const deleteCategory = async (id: string):Promise<delCatResTypes | undefi
 
   try {
 
-    const token = await getToken();
+    // const token = await getToken();
     
     const res = await axios.delete<delCatResTypes>(
       `${BASE_URL}/seller/${STORE_ID}/delete-category?id=${id}`, {

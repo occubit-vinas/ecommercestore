@@ -56,8 +56,15 @@ p, div, span {
   --radius-xl: calc(var(--radius) + 4px);
 }
 
+input,
+Input,
+textarea {
+  caret-color: auto;
+}
 
-
+* {
+  caret-color: transparent;
+}
 
 .btn-bdr {
   @apply rounded-[14px] border-2 border-[#050506];
@@ -67,14 +74,22 @@ p, div, span {
   @apply text-[#050506] font-inter font-normal text-[14px] leading-[100%] tracking-[0];
 }
 
+.btn-text-white {
+  @apply text-white font-inter font-normal text-[14px] leading-[100%] tracking-[0];
+}
+
 .black-btn-text {
   @apply text-white font-inter font-normal text-[14px] leading-[100%] tracking-[0];
 }
 
-
 .text-12-nml {
   @apply text-[#4D4F52] font-inter font-normal text-[12px] leading-[100%] tracking-[0px];
 }
+
+.text-12-nml-506 {
+  @apply text-[#050506] font-inter font-normal text-[12px] leading-[100%] tracking-[0px];
+}
+
 
 .text-14-nml {
   @apply text-[#4D4F52] font-inter font-normal text-[12px] leading-[100%] tracking-[0px];
@@ -83,7 +98,6 @@ p, div, span {
 .text-14-nml-506 {
   @apply text-[#050506] font-inter font-normal text-[14px] leading-[100%] tracking-[0px];
 }
-
 
 .text-14-md {
   @apply text-[#050506] font-inter font-medium text-[14px] leading-[100%] tracking-[0px] text-center
@@ -121,13 +135,12 @@ p, div, span {
 .text-22-md-506{
   @apply text-[#050506] font-inter font-medium text-[22px] leading-[100%] tracking-[0px]
 }
-
+.text-22-bd{
+  @apply text-[#050506] font-bold text-[22px] font-inter leading-[100%] tracking-[0px]
+}
 .text-32-md {
 @apply text-[#050506] font-medium text-[32px] leading-[100%] tracking-[0px];
 }
-
-
-
 :root {
   --radius: 0.625rem;
   --background: oklch(1 0 0);

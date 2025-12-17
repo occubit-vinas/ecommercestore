@@ -4,7 +4,8 @@ import React, { useEffect, useState } from "react";
 import { useCategoryStore } from "@/stores/category/category";
 import Serch_bar from "../ui/Serch_bar";
 import Link from "next/link";
-import { formatDate } from "@/utils/date";
+// import { formatDate } from "@/utils/date";
+import formatDate from "@/utils/date";
 import Image from "next/image";
 import CustomCheckbox from "../ui/CustomCheakbox";
 
@@ -17,7 +18,7 @@ import {
     TableRow,
 } from "@/components/ui/table";
 
-import Pagination from "../ui/Pagination";
+import Pagination from "./Pagination";
 
 const Cat_table = () => {
 
@@ -33,16 +34,16 @@ const Cat_table = () => {
         fetchcategories();
     }, [fetchcategories]);
 
-    // const data = categories.flat();
+    // const data_f = categories.flat();
+    // console.log('flat is',data_f);
+    
     const data = categories;
     console.log('data is...', data);
 
 
-    const [cheak, setcheak] = useState<number[]>([]);
-    console.log('c', cheak);
+    const [cheak, setcheak] = useState<string[]>([]);
 
-
-    const handleChekedRow = (id: number) => {
+    const handleChekedRow = (id: string) => {
         setcheak((prev) =>
             prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]
         );
@@ -52,9 +53,8 @@ const Cat_table = () => {
         if (cheak.length == data.length) {
             setcheak([]);
         } else {
-            setcheak(data.map((r) => r.id));
+            setcheak(data.map((r) => r.id ?? ""));
         }
-
     }
 
     const [expandedRows, setExpandedRows] = useState<string[]>([]);
@@ -129,7 +129,7 @@ const Cat_table = () => {
                             className="size-[18px]"
                             alt="tick"
                         />
-                        <span>Active</span>
+                        <span className='mt-[3px]'>Active</span>
                     </TableCell>
 
                     {/* Date */}
@@ -170,11 +170,11 @@ const Cat_table = () => {
 
     return (
         <>
-            <div className="bg-white rounded-xl p-[20px] flex flex-col gap-[20px] w-[1784px] h-[710px] shadow-[0px_2px_2px_0px_#05050640,2px_0px_2px_0px_#05050640,inset_0px_2px_2px_0px_#05050640,inset_2px_0px_2px_0px_#05050640]">
+            <div className="bg-white rounded-xl p-[20px] flex flex-col gap-[20px] w-[1784px] min-h-[710px] shadow-[0px_2px_2px_0px_#05050640,2px_0px_2px_0px_#05050640,inset_0px_2px_2px_0px_#05050640,inset_2px_0px_2px_0px_#05050640]">
 
-                <Serch_bar />
+                <Serch_bar value='' onChange={()=>{}}/>
 
-                <Table className="w-[1744px] border-collapse border-separate border-spacing-y-[10px] ">
+                <Table className="max-w-[1744px] border-collapse border-separate border-spacing-y-[10px] ">
 
                     {/* HEADER */}
                     <TableHeader className="rounded-[22px] shadow-[0px_0px_4px_0px_#00000040] h-[42px]">

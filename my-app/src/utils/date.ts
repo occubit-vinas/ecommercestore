@@ -1,5 +1,6 @@
 // 'use server'
-export const formatDate = (isoString: string):string => {
+
+const formatDate = (isoString: string):string => {
   console.log(isoString);
   
   const d = new Date(isoString);
@@ -9,3 +10,4 @@ export const formatDate = (isoString: string):string => {
 // Usage
 // formatDate('2025-11-24T12:28:25.020Z'); // → "11/24/25"
 
+export default formatDate

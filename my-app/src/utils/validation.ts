@@ -1,4 +1,4 @@
-export const validateLoginCredentials = (email: string, password: string) => {
+export const validateLoginCredentials = (email: string, password: string):any => {
     const errors: { email?: string; password?: string } = {};
 
     // Email validation

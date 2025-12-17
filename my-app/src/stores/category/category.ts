@@ -7,8 +7,12 @@ import addcategorie from '@/servicies/category/category.service';
 import { Category_ } from '@/types/category/cat_update.types';
 import { getAllCategory } from '@/servicies/category/category.service';
 // import { mapFormToApiPayload } from '@/utils/helper';
+import {persist} from 'zustand/middleware';
 
-export const useCategoryStore = create<CategoryStore>((set) => ({
+export const useCategoryStore = create<CategoryStore>()(
+    
+ persist(
+    (set) => ({
     categories: [],
     loading: false,
     error: null,
@@ -77,7 +81,7 @@ export const useCategoryStore = create<CategoryStore>((set) => ({
         })
 
     },
-    createCategory: async (data: CategoryPayload) => {
+    createCategory: async (data: Category_) => {
 
         set({ loading: true })
 
@@ -133,5 +137,12 @@ export const useCategoryStore = create<CategoryStore>((set) => ({
         }
     },
 
-}));
+}),{
+    name:'categories',
+    partialize:(state)=>({
+        categories:state.categories,
+    })
+}
+
+));
 

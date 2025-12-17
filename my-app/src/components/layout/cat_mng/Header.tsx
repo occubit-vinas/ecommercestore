@@ -1,9 +1,11 @@
+
 import React from 'react'
 
-const Header = ({ b1, b2, b3, title, desc }: {
+const Header = ({ b1, b2, b3,b4, title, desc }: {
   b1?: React.ReactNode,
   b2?: React.ReactNode,
   b3?: React.ReactNode,
+  b4?:React.ReactNode,
   title?: string,
   desc?: string
 }) => {
@@ -19,6 +21,7 @@ const Header = ({ b1, b2, b3, title, desc }: {
         {b1}
         {b2}
         {b3}
+        {b4}
       </div>
     </div>
   )

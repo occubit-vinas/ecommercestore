@@ -2,6 +2,7 @@
 import Image from "next/image"
 // import { Button } from "@/components/ui/button"
 import { Button } from "./Button"
+
 // export const S_filter=()=>{
 //     return(
 //     <div className='hover:cursor-pointer h-[40px] w-[146px] flex flex-row justify-center items-center gap-[8px] btn-bdr bg-white'>
@@ -48,19 +49,28 @@ import { Button } from "./Button"
 // }
 
 
-export const S_filter=()=>{
+export const S_filter=({onClick}:{onClick:()=>void})=>{
     return(
-    <Button className='hover:cursor-pointer h-[40px] w-[146px] flex flex-row justify-center items-center gap-[8px] btn-bdr bg-white'>
+    <Button className='hover:cursor-pointer hover:bg-white h-[40px] w-[146px] flex flex-row justify-center items-center gap-[8px] btn-bdr bg-white' onClick={onClick}>
         <Image src='/filter.svg' alt='filter' height={10} width={10} className='size-[20px]'/>
         <p className='btn-text'>Show Filter</p>
     </Button>
     )
 }
 
-export const Refresh=({onClick,loading}:{onClick:()=>void,loading:()=>void})=>{
+export const H_filter=({onClick}:{onClick:()=>void})=>{
+    return(
+    <Button className='hover:cursor-pointer h-[40px] w-[146px] flex flex-row justify-center items-center gap-[8px] btn-bdr bg-black' onClick={onClick}>
+        <Image src='/filter-white.svg' alt='filter' height={20} width={20} className=' text-white '/>
+        <p className='btn-text-white'>Hide Filter</p>
+    </Button>
+    )
+}
+
+export const Refresh=({onClick,loading}:{onClick:()=>void,loading:boolean})=>{
     return(
         <Button 
-            className='hover:cursor-pointer h-[40px] px-[13.5px] btn-bdr flex justify-center items-center bg-white flex flex-row gap-[8px]' onClick={onClick} disabled={loading}>
+            className='hover:cursor-pointer h-[40px] px-[13.5px] btn-bdr flex justify-center items-center bg-white hover:bg-white flex flex-row gap-[8px]' onClick={onClick} disabled={loading}>
             <Image src='/rotate-left.svg' alt='refresh' height={10} width={10} className='size-[20px]'/>
             <p className='btn-text mt-[1px]'>Refresh</p>
         </Button>
@@ -75,6 +85,28 @@ export const Add=({onClick}:{onClick:()=>void})=>{
             onClick={onClick}>
             <Image src='/add-square.svg' alt='add' height={10} width={10} className='size-[20px]' />
             <p className='black-btn-text text-white mt-[1px]'>Add</p>
+        </Button>
+    )
+}
+export const Plus_Create=({onClick}:{onClick:()=>void})=>{
+    return(
+        <Button 
+            // variant="outline"
+            className="hover:cursor-pointer h-[40px] w-[106px] btn-bdr flex flex-row justify-center items-center bg-[#050506] gap-[8px]" 
+            onClick={onClick}>
+            <Image src='/add-square.svg' alt='add' height={10} width={10} className='size-[20px]' />
+            <p className='black-btn-text text-white mt-[1px]'>Create</p>
+        </Button>
+    )
+}
+export const Export=({onClick}:{onClick:()=>void})=>{
+    return(
+        <Button 
+            // variant="outline"
+            className="hover:cursor-pointer h-[40px] w-[106px] btn-bdr flex flex-row justify-center items-center bg-[#050506] gap-[8px]" 
+            onClick={onClick}>
+            <Image src='/export-white.svg' alt='add' height={10} width={10} className='size-[20px]' />
+            <p className='black-btn-text text-white mt-[1px]'>Export</p>
         </Button>
     )
 }
